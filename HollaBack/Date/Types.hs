@@ -7,7 +7,9 @@ module HollaBack.Date.Types (Tag(..),
                             DayOfWeek(..),
                             Date(..),
                             TimeOfDay(..),
-                            DateTimeSpec(..)) where
+                            DateTimeSpec(..),
+                            dowNum,
+                            monthNum) where
 
 import Data.Text (Text)
 import Data.Time.LocalTime (TimeOfDay(..))
@@ -20,6 +22,9 @@ data DayOfWeek = Monday    |
                  Friday    |
                  Saturday  |
                  Sunday deriving (Show, Eq)
+
+instance Ord DayOfWeek where
+  compare a b = compare (dowNum a) (dowNum b)
 
 
 data HollaBackSpec = HollaBackSpec DateTimeSpec Tags deriving (Show, Eq)
@@ -44,3 +49,26 @@ data TimeKeyword = Minutes |
                    Weeks   |
                    Months  |
                    Years deriving (Show, Eq)
+
+dowNum :: DayOfWeek -> Int
+dowNum Monday    = 1
+dowNum Tuesday   = 2
+dowNum Wednesday = 3
+dowNum Thursday  = 4
+dowNum Friday    = 5
+dowNum Saturday  = 6
+dowNum Sunday    = 7
+
+monthNum :: Month -> Int
+monthNum January   = 1
+monthNum February  = 2
+monthNum March     = 3
+monthNum April     = 4
+monthNum May       = 5
+monthNum June      = 6
+monthNum July      = 7
+monthNum August    = 8
+monthNum September = 9
+monthNum October   = 10
+monthNum November  = 11
+monthNum December  = 12

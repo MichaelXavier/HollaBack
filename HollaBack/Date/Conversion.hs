@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module HollaBack.Date.Conversion (decideTime,
-                                 timestamp) where
+                                 timestamp,
+                                 dowDiff) where
 
 import Control.Applicative ((<$>),
                             (<*>),
@@ -13,6 +14,7 @@ import Data.Time.Calendar (Day(..),
                            addGregorianMonthsRollOver,
                            toGregorian,
                            fromGregorian)
+import Data.Time.Calendar.WeekDate (toWeekDate)
 import Data.Time.Clock (UTCTime(..),
                         DiffTime,
                         getCurrentTime)
@@ -40,6 +42,20 @@ decideTime (SpecificTime tod)            = UTCTime <$> today <*> diffTime
 timestamp :: UTCTime -> Integer
 timestamp = floor . utcTimeToPOSIXSeconds
 
+dowDiff :: DayOfWeek -> DayOfWeek -> Int
+dowDiff start finish 
+  | start > finish = dowNum finish + 7 - dowNum start
+  | otherwise      = dowNum finish - dowNum start
+
+addDow :: Day -> DayOfWeek -> Day
+addDow start finish = addDays diff start
+  where diff = toInteger $ adjustedFinish - startDowNum
+        adjustedFinish
+          | startDowNum > finishDowNum = finishDowNum + 7
+          | otherwise                  = finishDowNum
+        startDowNum = dayToDowNum start
+        finishDowNum = dowNum finish
+
 ---- Helpers
 today :: IO Day
 today = utctDay <$> getCurrentTime
@@ -48,9 +64,13 @@ thisYear :: IO Integer
 thisYear = getYear . toGregorian . utctDay <$> getCurrentTime
   where getYear (year, _, _) = year
 
-
 dowToDay :: DayOfWeek -> IO Day
-dowToDay = undefined
+dowToDay dowFinish = addDow <$> today <*> finish
+  where finish = pure dowFinish
+
+dayToDowNum :: Day -> Int
+dayToDowNum day = fromIntegral dowNum
+  where (_, _, dowNum) = toWeekDate day
 
 startOfDay :: DiffTime 
 startOfDay = timeOfDayToTime midnight
@@ -83,17 +103,3 @@ offsetTime (TimeUnit ms Months)
 offsetTime (TimeUnit ys Years)
            utct@UTCTime { utctDay = day }    = utct { utctDay = newDay }
   where newDay = addGregorianYearsRollOver ys day
-
-monthNum :: Month -> Int
-monthNum January   = 1
-monthNum February  = 2
-monthNum March     = 3
-monthNum April     = 4
-monthNum May       = 5
-monthNum June      = 6
-monthNum July      = 7
-monthNum August    = 8
-monthNum September = 9
-monthNum October   = 10
-monthNum November  = 11
-monthNum December  = 12
