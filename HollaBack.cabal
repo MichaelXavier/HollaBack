@@ -1,0 +1,43 @@
+Name:                HollaBack
+Version:             0.0.1
+Description:         An open-source implementation of a reminder-based email
+                     system modeled after the followup.cc service. Emails are
+                     sent to mailboxes specifying a reminder date. This email
+                     address format is compatible with those used on
+                     followup.cc. When that day passes, an email is sent back
+                     to the sender as a reminder.
+License:             MIT
+License-file:        LICENSE
+Author:              Michael Xavier
+Copyright:           Copyright: (c) 2012 Michael Xavier
+Maintainer:          michael@michaelxavier.net
+Build-Type:          Simple
+Cabal-Version:       >= 1.6
+extra-source-files:  Gemfile
+                     Gemfile.lock
+                     Makefile
+                     bin/mail_server
+                     vendor/rumbster
+                     HollaBack/MailServer/followup_observer.rb
+
+Executable hollaback
+  Main-is:           HollaBack/Scheduler/Main.hs
+  Build-Depends:     aeson == 0.5.*,
+                     attoparsec == 0.10.*,
+                     base >= 3 && < 5,
+                     bytestring == 0.9.*,
+                     haskell98,
+                     monad-loops == 0.3.*,
+                     text == 0.11.*,
+                     spawn == 0.3.*,
+                     redis == 0.11.*,
+                     time == 1.4.*,
+                     utf8-string == 0.3.*
+  GHC-Options: -Wall -threaded -O3 -rtsopts
+
+Test-Suite test-wmpoller
+  Type: exitcode-stdio-1.0
+  Main-Is: WarpMetrics/Testing/Poller/Main.hs
+  Build-Depends:  haskell98 >= 1.1.0.1 && < 1.2,
+                  hspec     == 0.9.*,
+                  HUnit     == 1.2.*

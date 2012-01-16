@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+require 'rumbster'
+require 'redis'
+require 'mail'
+require 'HollaBack/MailServer/holla_back_observer'
+
+SMTP_PORT = 2525
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+
+redis = Redis.connect(:host => REDIS_HOST, :port => REDIS_PORT)
+server = Rumbster.new(SMTP_PORT)
+server.add_observer(HollaBackObserver.new(redis))
+puts "ready"
+server.start
+sleep

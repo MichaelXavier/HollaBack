@@ -1,0 +1,54 @@
+# encoding: utf-8
+
+require 'rubygems'
+require 'bundler'
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
+require 'rake'
+
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
+  gem.name = "rumbster"
+  gem.homepage = "http://github.com/aesterline/rumbster"
+  gem.license = "Apache 2.0"
+  gem.summary = %Q{Rumbster is a testing SMTP server.}
+  gem.description = %Q{Rumbster is a simple SMTP server that receives email sent from a SMTP client. Received emails are published to observers that have registered with Rumbster. There are currently two observers; FileMailObserver and MailMessageObserver.}
+  gem.email = "adam@esterlines.com"
+  gem.authors = ["Adam Esterline"]
+  gem.platform = Gem::Platform::RUBY
+  # dependencies defined in Gemfile
+end
+Jeweler::RubygemsDotOrgTasks.new
+
+require 'rake/testtask'
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.verbose = true
+end
+
+require 'rcov/rcovtask'
+Rcov::RcovTask.new do |test|
+  test.libs << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.verbose = true
+  test.rcov_opts << '--exclude "gems/*"'
+end
+
+task :default => :test
+
+require 'rdoc/task'
+RDoc::Task.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "http_client #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
