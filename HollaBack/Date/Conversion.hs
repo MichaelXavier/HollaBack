@@ -25,18 +25,18 @@ import Data.Time.LocalTime (timeOfDayToTime,
 import HollaBack.Date.Types
 
 decideTime :: DateTimeSpec -> IO UTCTime
-decideTime (RelativeDateTime tu)         = offsetTime <$> tu' <*> getCurrentTime
+decideTime (RelativeDateTime tu)         = offsetTime <$> tu'   <*> getCurrentTime
   where tu' = pure tu
-decideTime (SpecificDateTime date tod)   = UTCTime <$> day <*> diffTime
+decideTime (SpecificDateTime date tod)   = UTCTime    <$> day   <*> diffTime
   where diffTime = pure $ timeOfDayToTime tod
         day      = dateToDay date
-decideTime (SpecificWeekdayTime dow tod) = UTCTime <$> day <*> diffTime
+decideTime (SpecificWeekdayTime dow tod) = UTCTime    <$> day   <*> diffTime
   where day      = dowToDay dow
         diffTime = pure $ timeOfDayToTime tod
-decideTime (SpecificWeekday dow)         = UTCTime <$> day   <*> diffTime
+decideTime (SpecificWeekday dow)         = UTCTime    <$> day   <*> diffTime
   where day      = dowToDay dow
         diffTime = pure startOfDay
-decideTime (SpecificTime tod)            = UTCTime <$> today <*> diffTime
+decideTime (SpecificTime tod)            = UTCTime    <$> today <*> diffTime
   where diffTime = pure $ timeOfDayToTime tod
 
 timestamp :: UTCTime -> Integer
