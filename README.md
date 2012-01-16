@@ -75,6 +75,10 @@ different level or for people who are concerned about privacy. If you want a
 polished service that has lots of features, go sign up with them and support
 them.
 
+This project vendors the [rumbster](https://github.com/aesterline/rumbster)
+project. rumbster is an SMTP server that allows you to register observers on
+receipt of email.
+
 The scheduling algorithm I used was a straight port from
 [resque-scheduler](https://github.com/bvandenbos/resque-scheduler.git). I
 thought the solution was elegant and simple. 
