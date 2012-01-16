@@ -27,6 +27,7 @@ Hollaback has the following system requirements:
 2. Ruby 1.8.7 or higher. 
 3. The bundler gem. Use `gem install bundler` to install it.
 4. Redis
+5. sendmail
 
 Building
 ========

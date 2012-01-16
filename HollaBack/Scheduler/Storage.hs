@@ -43,7 +43,7 @@ import HollaBack.Date.Types
 import HollaBack.Date.Parser (dateTimeSpec)
 import HollaBack.Date.Conversion (decideTime,
                                  timestamp)
-import HollaBack.Scheduler.Types
+import HollaBack.Types
 
 --TODO: recipient?
 persistHollaBack :: Redis -> Payload -> DateTimeSpec -> IO ()

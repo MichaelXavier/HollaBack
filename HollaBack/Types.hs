@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings, DeriveDataTypeable #-}
-module HollaBack.Scheduler.Types (Payload(..),
-                                 EmailAddress(..),
-                                 ParseError(..)) where
+module HollaBack.Types (Payload(..),
+                        EmailAddress(..),
+                        ParseError(..)) where
 
 import qualified Control.Exception as E
 import Control.Applicative ((<$>),

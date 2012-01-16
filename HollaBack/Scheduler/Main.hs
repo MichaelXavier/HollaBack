@@ -15,11 +15,11 @@ import           System.IO (hPutStrLn,
 import           HollaBack.Date.Parser (dateTimeSpec)
 import           HollaBack.Date.Conversion (decideTime)
 import           HollaBack.Scheduler.Storage (persistHollaBack,
-                                             pollForHollaBacks,
-                                             getIncomingMessage,
-                                             mailbox, --DEBUG
-                                             dateTimeSpecFromEmail)
-import           HollaBack.Scheduler.Types
+                                              pollForHollaBacks,
+                                              getIncomingMessage,
+                                              dateTimeSpecFromEmail)
+import           HollaBack.Mailer (hollaBack)
+import           HollaBack.Types
 
 main :: IO ()
 main = sequence_ =<< mapM spawn [handleIncomingMessages, handleDueHollaBacks]
@@ -39,11 +39,10 @@ handleDueHollaBacks = do
   warn "started  due followups monitor"
   redis <- connect localhost defaultPort
   forever $ do
-    pollForHollaBacks redis cb
+    pollForHollaBacks redis hollaBack
     threadDelay delaySeconds
   disconnect redis
-  where cb p         = BS.putStrLn $ "Got payload " `BS.append` (pack . show $ p)
-        delaySeconds = 5000000 -- 5 seconds
+  where delaySeconds = 5000000 -- 5 seconds
 
 warn :: String -> IO ()
 warn = hPutStrLn stderr
