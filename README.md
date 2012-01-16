@@ -36,7 +36,9 @@ Running
 =======
 To run the mail server, run ./bin/mail_server
 
-To run the scheduler, run 
+To run the scheduler, run `./bin/hollaback`
+
+To run specs, run `make spec`
 
 Status
 ======

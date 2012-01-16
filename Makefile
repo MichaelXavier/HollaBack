@@ -13,5 +13,5 @@ configure:
 
 bundle: Gemfile Gemfile.lock
 	bundle install
-quick_spec:
+spec:
 	runhaskell HollaBack/Testing/Main.hs
