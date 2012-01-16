@@ -53,12 +53,10 @@ This project is not nearly complete. Features implemented so far:
 * All redis keys stored to the `hollaback:` namespace
 * Mailer sends mail using sendmail without any configurable flags
 
-
 Features yet to be implemented and pitfalls:
 
 * Server does not respect the timezone of the sender. It assumes UTC. This will
   need to change.
-* Needs configuration for Scheduler.
 * Error handling is at an absolute minimum.
 * Attachments are discarded (this probably won't change).
 * No rate limiting or authentication to speak of.
