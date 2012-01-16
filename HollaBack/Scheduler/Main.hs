@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module HollaBack.Scheduler.Main (main) where
+module Main (main) where
 
 import           Control.Concurrent (threadDelay)
 import           Control.Concurrent.Spawn (spawn)
