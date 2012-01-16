@@ -1,7 +1,7 @@
 require 'json'
 
 class HollaBackObserver
-  MAIL_KEY = "followup:messages"
+  MAIL_KEY = "hollaback:messages"
   class SimpleMail < Struct.new(:from, :to, :subject, :body)
     def to_json
       { :from    => from,

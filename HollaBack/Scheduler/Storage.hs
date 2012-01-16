@@ -127,7 +127,7 @@ scheduleKey :: ByteString
 scheduleKey = scopeKey ["schedule"]
 
 keyPrefix :: ByteString
-keyPrefix = "followup"
+keyPrefix = "hollaback"
 
 scopeSeparator :: ByteString
 scopeSeparator = ":"
