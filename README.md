@@ -34,7 +34,7 @@ Run `make build`.
 
 Running
 =======
-To run the mail server, run ./bin/mail_server
+To run the mail server, run `./bin/mail_server`
 
 To run the scheduler, run `./bin/hollaback`
 
