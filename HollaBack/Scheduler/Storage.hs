@@ -6,25 +6,20 @@ module HollaBack.Scheduler.Storage (persistHollaBack,
                                    mailbox) where
 
 import Control.Applicative ((<$>),
-                            (<*>),
-                            (<*),
-                            pure)
-import Control.Monad (when,
-                      liftM)
+                            (<*))
+import Control.Monad (when)
 import Control.Monad.Loops (unfoldM_)
 import Data.Attoparsec.Text (parseOnly)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as BS
-import Data.ByteString.Char8 (pack,
-                              unpack,
+import Data.ByteString.Char8 (unpack,
                               readInteger)
 import Data.ByteString.UTF8 (fromString)
 import Data.Maybe (fromJust,
                    fromMaybe,
-                   maybeToList,
                    listToMaybe)
-import Data.Text (breakOn, Text)
-import Data.Text.Encoding (decodeUtf8)
+import Data.Text (breakOn,
+                  Text)
 import Data.Time.Clock (getCurrentTime)
 import Database.Redis.Redis (Redis,
                              Reply(..),
@@ -50,9 +45,9 @@ persistHollaBack :: Redis -> Payload -> DateTimeSpec -> IO ()
 persistHollaBack redis payload dts = do
   ts <- timestamp <$> decideTime dts
   -- add payload to the timestamp queue
-  rpush redis (timestampKey ts) payload
+  _ <- rpush redis (timestampKey ts) payload
   -- Add the timestamp with the timestamp value as the weight to the sorted set of keys
-  zadd redis scheduleKey (fromIntegral ts) (toBS ts)
+  _ <- zadd redis scheduleKey (fromIntegral ts) (toBS ts)
   return ()
 
 dateTimeSpecFromEmail :: EmailAddress -> Either String DateTimeSpec
@@ -97,6 +92,7 @@ nextTimestamp redis stopTs = do
         lims                     = Just (0, 1)
         withScores               = False
         unwrap (RBulk (Just bs)) = read . unpack $ bs
+        unwrap x                 = unexpectedResponse x
         dblTs                    = fromIntegral stopTs
 
 remTimestampIfEmpty :: Redis -> TimeStamp -> IO ()
@@ -105,14 +101,16 @@ remTimestampIfEmpty redis ts = do
   when (remaining == 0) remove
   where tsk                = timestampKey ts
         remove             = del redis tsk >> zrem redis scheduleKey ts >> return ()
+        unwrapLen :: Reply Int -> Int
         unwrapLen (RInt i) = fromIntegral i
+        unwrapLen x        = unexpectedResponse x
 
 nextHollaBackForTimestamp :: Redis -> TimeStamp -> IO (Maybe Payload)
 nextHollaBackForTimestamp redis ts = popPayload <* remTimestampIfEmpty redis ts
   where popPayload         = unwrap <$> lpop redis tsk
         tsk                = timestampKey ts
         unwrap (RBulk mts) = mts
-        --TODO: not exhaustive?
+        unwrap x           = unexpectedResponse x
 
 timestampKey :: TimeStamp -> ByteString
 timestampKey ts = scopeKey ["timestamps", toBS ts]
@@ -134,3 +132,6 @@ scopeSeparator = ":"
 
 now :: IO TimeStamp
 now = timestamp <$> getCurrentTime
+
+unexpectedResponse :: Show a => a -> b
+unexpectedResponse a = error $ "Unexpected redis response: " ++ show a

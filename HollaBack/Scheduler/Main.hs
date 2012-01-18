@@ -4,17 +4,11 @@ module Main (main) where
 import           Control.Concurrent (threadDelay)
 import           Control.Concurrent.Spawn (spawn)
 import           Control.Monad (forever)
-import           Data.Attoparsec.Text (parseOnly)
-import           Data.ByteString.Char8 (unpack, pack)
-import qualified Data.ByteString as BS
 import           Database.Redis.Redis
-import qualified Data.Text.IO as TIO
 import           System.Console.CmdArgs.Implicit (cmdArgs_)
 import           System.IO (hPutStrLn,
                             stderr)
 
-import           HollaBack.Date.Parser (dateTimeSpec)
-import           HollaBack.Date.Conversion (decideTime)
 import           HollaBack.Scheduler.Storage (persistHollaBack,
                                               pollForHollaBacks,
                                               getIncomingMessage,
@@ -49,7 +43,7 @@ handleDueHollaBacks :: String -> String -> Int -> IO ()
 handleDueHollaBacks host port interval = do
   warn "started due followups monitor"
   redis <- connect host port
-  forever $ do
+  _ <- forever $ do
     pollForHollaBacks redis hollaBack
     threadDelay delaySeconds
   disconnect redis
