@@ -55,13 +55,10 @@ This project is not nearly complete. Features implemented so far:
 
 Features yet to be implemented and pitfalls:
 
-* Server does not respect the timezone of the sender. It assumes UTC. This will
-  need to change.
 * Error handling is at an absolute minimum.
 * Attachments are discarded (this probably won't change).
 * No rate limiting or authentication to speak of.
 * Need more introspection into the backend for troubleshooting.
-* There are a lot of warnings thrown by the compiler that I will address.
 
 Credits
 =======

@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module HollaBack.Date.Conversion (decideTime,
-                                 timestamp,
-                                 dowDiff) where
+module HollaBack.Date.Conversion (decideTimestamp,
+                                  timestamp,
+                                  dowDiff) where
 
 import Control.Applicative ((<$>),
                             (<*>),
@@ -41,6 +41,16 @@ decideTime (SpecificTime tod)            = UTCTime    <$> today <*> diffTime
 
 timestamp :: UTCTime -> Integer
 timestamp = floor . utcTimeToPOSIXSeconds
+
+decideTimestamp :: Int -> DateTimeSpec -> IO Integer
+decideTimestamp _ dts@(RelativeDateTime _) = timestamp <$> decideTime dts
+decideTimestamp offset dts                 = offsetTimestamp offset . timestamp <$> decideTime dts
+
+-- We negate the sender's offset seconds to compensate it. If they are in
+-- PST(-8:00) and they ask for 6AM, we store it as 2PM UTC
+offsetTimestamp :: Int -> Integer -> Integer
+offsetTimestamp secs = (+ compensatedOffset)
+  where compensatedOffset = negate . fromIntegral $ secs
 
 dowDiff :: DayOfWeek -> DayOfWeek -> Int
 dowDiff start finish 

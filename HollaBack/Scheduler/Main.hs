@@ -25,7 +25,8 @@ main = runWithConfig =<< cmdArgs_ annotations
 runWithConfig :: Config -> IO ()
 runWithConfig Config { redisPort = port,
                        redisHost = host,
-                       mailInterval = interval} = sequence_ =<< mapM spawn [handleIncoming, handleDue]
+                       --mailInterval = interval} = sequence_ =<< mapM spawn [handleIncoming, handleDue]
+                       mailInterval = interval} = handleIncoming
   where handleIncoming = handleIncomingMessages host port
         handleDue      = handleDueHollaBacks host port interval
 

@@ -34,16 +34,16 @@ import Database.Redis.Redis (Redis,
                              zrangebyscore)
 import Database.Redis.ByteStringClass
 
+import HollaBack.Types
 import HollaBack.Date.Types
 import HollaBack.Date.Parser (dateTimeSpec)
-import HollaBack.Date.Conversion (decideTime,
-                                 timestamp)
-import HollaBack.Types
+import HollaBack.Date.Conversion (decideTimestamp,
+                                  timestamp)
 
---TODO: recipient?
+--TODO: only offset if relative
 persistHollaBack :: Redis -> Payload -> DateTimeSpec -> IO ()
-persistHollaBack redis payload dts = do
-  ts <- timestamp <$> decideTime dts
+persistHollaBack redis payload@Payload { offsetSeconds = os } dts = do
+  ts <- decideTimestamp os dts
   -- add payload to the timestamp queue
   _ <- rpush redis (timestampKey ts) payload
   -- Add the timestamp with the timestamp value as the weight to the sorted set of keys

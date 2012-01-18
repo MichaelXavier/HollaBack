@@ -25,10 +25,11 @@ import Data.ByteString.Lazy (toChunks,
 import qualified Data.ByteString as BS
 import Database.Redis.ByteStringClass
 
-data Payload = Payload { from    :: EmailAddress,
-                         to      :: EmailAddress,
-                         subject :: Text,
-                         body    :: Text } deriving (Show, Eq)
+data Payload = Payload { from          :: EmailAddress,
+                         to            :: EmailAddress,
+                         subject       :: Text,
+                         body          :: Text,
+                         offsetSeconds :: Int } deriving (Show, Eq)
 
 type EmailAddress = Text
 
@@ -39,16 +40,18 @@ instance BS Payload where
           parsed = decode' $ reLazy bs
 
 instance ToJSON Payload where
-  toJSON pl = object ["from"    .= from pl,
-                      "body"    .= body pl,
-                      "to"      .= to pl,
-                      "subject" .= subject pl ]
+  toJSON pl = object ["from"           .= from pl,
+                      "body"           .= body pl,
+                      "to"             .= to pl,
+                      "subject"        .= subject pl,
+                      "offset_seconds" .= offsetSeconds pl ]
 
 instance FromJSON Payload where
   parseJSON (Object v) = Payload <$> v .: "from"
                                  <*> v .: "to"
                                  <*> v .: "subject"
                                  <*> v .: "body"
+                                 <*> v .: "offset_seconds"
   parseJSON v          = typeMismatch "Payload" v
 
 data ParseError = ParseError String deriving (Show, Eq, Typeable)
