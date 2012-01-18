@@ -6,8 +6,6 @@ module HollaBack.Date.Conversion (decideTimestamp,
 import Control.Applicative ((<$>),
                             (<*>),
                             pure)
-import Data.ByteString (ByteString)
-import Data.ByteString.Char8 (pack)
 import Data.Time.Calendar (Day(..),
                            addDays,
                            addGregorianYearsRollOver,
@@ -79,8 +77,8 @@ dowToDay dowFinish = addDow <$> today <*> finish
   where finish = pure dowFinish
 
 dayToDowNum :: Day -> Int
-dayToDowNum day = fromIntegral dowNum
-  where (_, _, dowNum) = toWeekDate day
+dayToDowNum day = fromIntegral dn
+  where (_, _, dn) = toWeekDate day
 
 startOfDay :: DiffTime 
 startOfDay = timeOfDayToTime midnight
@@ -102,7 +100,7 @@ offsetTime (TimeUnit hs Hours)
         seconds = fromInteger $ hs * 60 * 60
 offsetTime (TimeUnit ds Days)
            utct@UTCTime { utctDay = day }    = utct { utctDay = newDay }
-  where newDay = addDays ds newDay
+  where newDay = addDays ds day
 offsetTime (TimeUnit ws Weeks)
            utct@UTCTime { utctDay = day }    = utct  { utctDay = newDay }
   where newDay = addDays days day

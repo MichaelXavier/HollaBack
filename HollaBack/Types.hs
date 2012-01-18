@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, DeriveDataTypeable #-}
 module HollaBack.Types (Payload(..),
-                        EmailAddress(..),
+                        EmailAddress,
                         ParseError(..)) where
 
 import qualified Control.Exception as E
@@ -15,11 +15,9 @@ import Data.Aeson (decode',
                    (.=),
                    (.:))
 import Data.Aeson.Types (typeMismatch)
-import Data.Attoparsec.ByteString (parseOnly)
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Typeable (Typeable)
-import Data.ByteString (ByteString)
 import Data.ByteString.Lazy (toChunks,
                              fromChunks)
 import qualified Data.ByteString as BS
@@ -35,9 +33,10 @@ type EmailAddress = Text
 
 instance BS Payload where
   toBS      = deLazy . encode 
+    where deLazy = BS.concat . toChunks
   fromBS bs = fromMaybe (E.throw $ ParseError "Failed to parse") parsed
-    where throwLeft (Left err) = E.throw $ ParseError err
-          parsed = decode' $ reLazy bs
+    where parsed = decode' $ reLazy bs
+          reLazy = fromChunks . (:[])
 
 instance ToJSON Payload where
   toJSON pl = object ["from"           .= from pl,
@@ -58,6 +57,4 @@ data ParseError = ParseError String deriving (Show, Eq, Typeable)
 
 instance E.Exception ParseError
 
-deLazy = BS.concat . toChunks
 
-reLazy = fromChunks . (:[])

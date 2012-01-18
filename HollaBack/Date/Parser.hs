@@ -11,7 +11,6 @@ module HollaBack.Date.Parser (tag,
 import Control.Applicative ((<*>),
                             (*>),
                             (<$>),
-                            (<$),
                             (<|>),
                             pure,
                             many)
@@ -19,8 +18,6 @@ import qualified Data.Attoparsec.Text as A
 import qualified Data.Attoparsec.Combinator as AC
 import Data.Attoparsec.Text (Parser)
 import Data.Text (Text)
-import Data.Time.Clock (secondsToDiffTime)
-import Data.Word (Word8)
 
 import HollaBack.Date.Types
 

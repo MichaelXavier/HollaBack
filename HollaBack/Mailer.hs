@@ -1,6 +1,5 @@
 module HollaBack.Mailer (hollaBack) where
 
-import Control.Applicative ((<$>))
 import Data.Text.Lazy (empty,
                        fromStrict)
 import Network.Mail.Mime (Mail,

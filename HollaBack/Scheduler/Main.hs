@@ -25,8 +25,7 @@ main = runWithConfig =<< cmdArgs_ annotations
 runWithConfig :: Config -> IO ()
 runWithConfig Config { redisPort = port,
                        redisHost = host,
-                       --mailInterval = interval} = sequence_ =<< mapM spawn [handleIncoming, handleDue]
-                       mailInterval = interval} = handleIncoming
+                       mailInterval = interval} = sequence_ =<< mapM spawn [handleIncoming, handleDue]
   where handleIncoming = handleIncomingMessages host port
         handleDue      = handleDueHollaBacks host port interval
 
@@ -36,9 +35,10 @@ handleIncomingMessages :: String -> String -> IO ()
 handleIncomingMessages host port = do
   warn "started message handler"
   redis <- connect host port
-  forever $ do
+  _ <- forever $ do
     pl <- getIncomingMessage redis
     either warn (persistHollaBack redis pl) $ dateTimeSpecFromEmail . to $ pl
+  disconnect redis
 
 handleDueHollaBacks :: String -> String -> Int -> IO ()
 handleDueHollaBacks host port interval = do
