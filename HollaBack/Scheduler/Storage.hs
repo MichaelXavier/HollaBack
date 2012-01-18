@@ -64,7 +64,7 @@ mailbox = fst . breakOn "@"
 pollForHollaBacks :: Redis -> (Payload -> IO ()) -> IO ()
 pollForHollaBacks redis f = unfoldM_ $ poll =<< now
   where poll stopTs = do maybeTs <- nextTimestamp redis stopTs
-                         whenJust maybeTs $ \ts -> do 
+                         whenJust maybeTs $ \ts -> 
                            unfoldM_ $ do maybePayload <- nextHollaBackForTimestamp redis ts
                                          whenJust maybePayload f
                                          return maybePayload
@@ -92,7 +92,7 @@ instance BS Integer where
 nextTimestamp :: Redis -> TimeStamp -> IO (Maybe TimeStamp)
 nextTimestamp redis stopTs = do
   RMulti timestamps <- zrangebyscore redis scheduleKey interval lims withScores
-  return $ unwrap <$> (listToMaybe $ fromMaybe [] timestamps)
+  return $ unwrap <$> listToMaybe (fromMaybe [] timestamps)
   where interval                 = LeftOpen 0 dblTs -- Does not seem to let us use +/- infinity :(
         lims                     = Just (0, 1)
         withScores               = False

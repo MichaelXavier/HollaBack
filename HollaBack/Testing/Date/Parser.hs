@@ -176,4 +176,4 @@ isLeft :: Either a b -> Bool
 isLeft (Left _) = True
 isLeft _        = False
 
-fails res = (isLeft res ~?= True)
+fails res = isLeft res ~?= True
