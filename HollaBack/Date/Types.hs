@@ -31,8 +31,8 @@ data HollaBackSpec = HollaBackSpec DateTimeSpec Tags deriving (Show, Eq)
 
 data Date = Date Month Int deriving (Show, Eq)
 
-data DateTimeSpec = RelativeDateTime TimeUnit         |
-                    SpecificDateTime Date TimeOfDay   |
+data DateTimeSpec = RelativeDateTime TimeUnit               |
+                    SpecificDateTime Date TimeOfDay         |
                     SpecificWeekdayTime DayOfWeek TimeOfDay |
                     SpecificWeekday DayOfWeek               |
                     SpecificTime TimeOfDay deriving (Show, Eq)
