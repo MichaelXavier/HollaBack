@@ -1,7 +1,7 @@
 build: build_without_symlink 
 	ln -sf ./dist/build/hollaback/hollaback bin/hollaback
 
-build_without_symlink: bundle configure
+build_without_symlink: configure
 	cabal build
 
 clean:
@@ -11,7 +11,5 @@ clean:
 configure:
 	cabal configure
 
-bundle: Gemfile Gemfile.lock
-	bundle install
 spec:
 	runhaskell HollaBack/Testing/Main.hs

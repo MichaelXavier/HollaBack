@@ -13,7 +13,6 @@ module HollaBack.Date.Types (Tag(..),
 
 import Data.Text (Text)
 import Data.Time.LocalTime (TimeOfDay(..))
-import Time (Month(..))
 
 data DayOfWeek = Monday    |
                  Tuesday   |
@@ -28,6 +27,19 @@ instance Ord DayOfWeek where
 
 
 data HollaBackSpec = HollaBackSpec DateTimeSpec Tags deriving (Show, Eq)
+
+data Month = January   |
+             February  |
+             March     |
+             April     |
+             May       |
+             June      |
+             July      |
+             August    |
+             September |
+             October   |
+             November  |
+             December deriving (Show, Eq)
 
 data Date = Date Month Int deriving (Show, Eq)
 
